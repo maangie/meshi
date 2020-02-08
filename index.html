@@ -1,0 +1,71 @@
+<head>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <style>
+    #meshi_image { position: absolute; }
+  </style>
+</head>
+
+<img id='meshi_image' src='./cat.jpg' />
+
+<script>
+  (async () => {
+    const b64 = localStorage.getItem('imageData');
+    if (!b64) return;
+    let img = await new Promise(resolve => {
+      let img = new Image();
+      img.onload = () => resolve(img);
+      img.src = b64;
+    });
+
+    meshi_image.src = img.src;
+    console.log(img);
+  })();
+
+  document.oncontextmenu = (e) => {
+    e.preventDefault();
+    location.href = './config.html';
+  }
+
+  document.ontouchstart = (e) => {
+    if (e.touches.length > 2) document.oncontextmenu(e);
+  }
+
+  (() => {
+    let x;
+    let y;
+
+    meshi_image.onmousedown = meshi_image.ontouchstart = (e) => {
+      let event = e.type == 'mousedown' ? e : e.changedTouches[0];
+      e.preventDefault();
+      x = event.pageX - meshi_image.offsetLeft;
+      y = event.pageY - meshi_image.offsetTop;
+      document.body.onmousemove = document.body.ontouchmove = mmove;
+    }
+
+    const mmove = (e) => {
+      let event = e.type == 'mousemove' ? e : e.changedTouches[0];
+      e.preventDefault();
+
+      let top = event.pageY - y;
+
+      meshi_image.style.top = `${top}px`;
+      meshi_image.style.left = `${event.pageX - x}px`;
+
+      meshi_image.onmouseup = document.body.onmouseleave =
+        meshi_image.ontouchend = document.body.ontouchend = mup;
+
+      if (top > -350) return;
+
+      meshi_image.transition = '1000';
+      meshi_image.style.top = '-400px';
+      mup();
+    }
+
+    const mup = (e) => {
+      document.body.onmousemove = meshi_image.mouseup =
+        document.body.ontouchmove = meshi_image.ontouchmove = null;
+    }
+  })();
+</script>

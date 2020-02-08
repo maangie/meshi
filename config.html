@@ -1,0 +1,145 @@
+<head>
+  <meta charset="utf-8">
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    #display {
+      border: 1px solid;
+      width: 25rem;
+      padding: 1rem;
+    }
+
+    #display .name-container { display: inline-block; }
+
+    #display .furigana {
+      font-size: x-small;
+      text-align-last: justify;
+    }
+
+    #display .name {
+      display: inline-block;
+      font-size: xx-large;
+      margin-top: -10px;
+    }
+
+    #display .post {
+      font-size: small;
+      margin-top: -10px;
+    }
+
+    #display .company-name {
+      margin-top: 15px;
+      font-size: large;
+      font-weight: bold;
+    }
+
+    #display .zip {
+      margin-top: 10px;
+      font-size: x-small;
+    }
+
+    #display .address {
+      font-size: small;
+      font-weight: bold;
+    }
+
+    #display .tel-fax {
+      margin-top: 10px;
+      font-size: small;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>config</h1>
+  <div id='inputs' class="container">
+    <div class="row">
+      <input class="col name" placeholder="夏目漱石" />
+      <input class="col furigana" placeholder="なつめそうせき" />
+      <input class="col post" placeholder="作家" />
+      <input class="col company-name" placeholder="株式会社朝日新聞社" />
+      <input class="col zip" placeholder="〒001-0001" />
+      <input class="col col-5 address1" placeholder="大阪府大阪市波田陽区房之助2-3-5" />
+      <input class="col address2" placeholder="愚陀仏庵" />
+      <input class="col tel" placeholder="TEL 090-0001-0001" />
+      <input class="col fax" placeholder="FAX 090-0001-0001" />
+      <button id="submit" class="btn btn-success">完了</button>
+    </div>
+  </div>
+
+
+  <div id="display">
+    <div class="row name-container">
+      <div class="col col-12 furigana">なつめ　そうせき</div>
+      <div class="col"><span class="name">夏目　漱石</span></div>
+    </div>
+
+    <div class="row"><div class="col post">作家</div></div>
+    <div class="row"><div class="col company-name">株式会社朝日新聞社</div></div>
+    <div class="row"><div class="col zip">〒001-0001</div></div>
+    <div class="row"><div class="col address address1">大阪府大阪市波田陽区房之助2-3-5</div></div>
+    <div class="row"><div class="col address address2">愚陀仏庵</div></div>
+
+    <div class="row tel-fax">
+      <div class="col col-5 tel">TEL 090-0001-0001</div>
+      <div class="col col-5 fax">FAX 090-0001-0001</div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const inputItems = document.querySelectorAll('#inputs .col');
+
+      const getInputFieldName = input => {
+        for (let klass of input.classList) {
+          if (!klass.includes('col')) return klass;
+        }
+      }
+
+      for (let item of inputItems) {
+        let fieldName = getInputFieldName(item);
+        let value = localStorage.getItem(`input-${fieldName}`);
+
+        if (value) {
+          document.querySelector(`#inputs .${fieldName}`).value =
+            document.querySelector(`#display .${fieldName}`).innerText = value;
+        }
+
+        item.onkeyup = () => {
+          for (let item of inputItems) {
+            let displayItem =
+              document.querySelector(`#display .${getInputFieldName(item)}`);
+
+            displayItem.innerText = item.value ? item.value : item.placeholder;
+          }
+        }
+      }
+
+      submit.onclick = async () => {
+        for (let item of inputItems) {
+          if (item.value) {
+            localStorage.setItem(`input-${getInputFieldName(item)}`, item.value);
+          }
+        }
+
+        display.style.transform = 'rotate(90deg)';
+        const canvas = await html2canvas(display);
+        const blob = await new Promise(resolve => canvas.toBlob(blob => resolve(blob)));
+
+        const b64 = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+
+        localStorage.setItem('imageData', b64);
+        location.href = './index.html';
+      }
+    })();
+  </script>
+</body>
