@@ -5,6 +5,10 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/body-scroll-lock@2.6.4/lib/bodyScrollLock.min.js"></script>
 
   <style>
@@ -18,11 +22,17 @@
       0% { transform: rotate(180deg) translateX(1000px) translateY(-100px); }
       100% { transform: rotate(0deg) translateX(0px) translateY(0px) }
     }
+
+    .container { margin-top: 1rem; }
   </style>
 </head>
 
 <img id='meshi_image' src='./default.png' />
-<button id='show_button'>名刺表示</button>
+
+<div class="container">
+  <button class='btn btn-lg btn-primary' id='show_button'>名刺表示</button>
+  <a href='./config.html' class='btn btn-lg btn-success' id='config_button'>設定</a>
+</div>
 
 <script type='module'>
   (async () => {
@@ -39,22 +49,13 @@
 
   show_button.onclick = () => {
     meshi_image.style.display = 'inline';
-    show_button.style.display = 'none';
+    show_button.style.display = config_button.style.display = 'none';
 
     setTimeout(() => {
       meshi_image.style.left = (window.innerWidth - meshi_image.width) / 2;
       meshi_image.style.top = (window.innerHeight - meshi_image.height) / 2;
       meshi_image.style.animation = 'spin 1s linear';
     }, 1);
-  }
-
-  document.oncontextmenu = (e) => {
-    e.preventDefault();
-    location.href = './config.html';
-  }
-
-  document.ontouchstart = (e) => {
-    if (e.touches.length > 2) document.oncontextmenu(e);
   }
 
   (() => {
@@ -83,12 +84,12 @@
       meshi_image.onmouseup = document.body.onmouseleave =
         meshi_image.ontouchend = document.body.ontouchend = mup;
 
-      if (top > -1000) return;
+      if (top > -450) return;
 
       mup();
 
       meshi_image.style.transition = 'all 300ms 0s ease'
-      meshi_image.style.top = '-1200px';
+      meshi_image.style.top = '-550px';
     }
 
     const mup = (e) => {
