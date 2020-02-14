@@ -1,15 +1,28 @@
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
   <script src="https://cdn.jsdelivr.net/npm/body-scroll-lock@2.6.4/lib/bodyScrollLock.min.js"></script>
 
   <style>
-    #meshi_image { position: absolute; }
+    #meshi_image {
+      position: absolute;
+      display: none;
+      width: 8cm;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(180deg) translateX(1000px) translateY(-100px); }
+      100% { transform: rotate(0deg) translateX(0px) translateY(0px) }
+    }
   </style>
 </head>
 
 <img id='meshi_image' src='./default.png' />
+<button id='show_button'>名刺表示</button>
 
 <script type='module'>
   (async () => {
@@ -22,8 +35,18 @@
     });
 
     meshi_image.src = img.src;
-    console.log(img);
   })();
+
+  show_button.onclick = () => {
+    meshi_image.style.display = 'inline';
+    show_button.style.display = 'none';
+
+    setTimeout(() => {
+      meshi_image.style.left = (window.innerWidth - meshi_image.width) / 2;
+      meshi_image.style.top = (window.innerHeight - meshi_image.height) / 2;
+      meshi_image.style.animation = 'spin 1s linear';
+    }, 1);
+  }
 
   document.oncontextmenu = (e) => {
     e.preventDefault();
