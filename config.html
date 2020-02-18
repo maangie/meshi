@@ -53,6 +53,13 @@
       font-size: small;
       font-weight: bold;
     }
+
+    #portrait {
+      position: absolute;
+      height: 100px;
+      width: auto;
+      left: 17rem;
+    }
   </style>
 </head>
 
@@ -69,12 +76,19 @@
       <input class="col col-12 col-sm-6 address2" placeholder="愚陀仏庵" />
       <input class="col col-6 tel" placeholder="TEL 090-0001-0001" />
       <input class="col col-6 fax" placeholder="FAX 090-0001-0001" />
+      <label class="col">
+        <span class="btn btn-primary">
+          写真
+          <input id="image_input" type="file" style="display:none">
+        </span>
+      </label>
       <button id="submit" class="btn btn-success">完了</button>
     </div>
+    <img id='image_preview' class="col image-preview" />
   </div>
 
-
   <div id="display">
+    <div class=""><img id='portrait'></div>
     <div class="row name-container">
       <div class="col col-12 furigana">なつめ　そうせき</div>
       <div class="col"><span class="name">夏目　漱石</span></div>
@@ -94,6 +108,8 @@
 
   <script>
     (() => {
+      let portrait_data = null;
+
       const inputItems = document.querySelectorAll('#inputs .col');
 
       const getInputFieldName = input => {
@@ -121,12 +137,27 @@
         }
       }
 
+      portrait_data = localStorage.getItem('input-portrait');
+      if (portrait_data) portrait.src = portrait_data;
+
+      image_input.onchange = () => {
+        const files = !!image_input.files ? image_input.files : [];
+        if (!files.length || !window.FileReader) return;
+        if (!/^image/.test(files[0].type)) return;
+
+        let reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.onload = () => portrait.src = portrait_data = reader.result;
+      }
+
       submit.onclick = async () => {
         for (let item of inputItems) {
           if (item.value) {
             localStorage.setItem(`input-${getInputFieldName(item)}`, item.value);
           }
         }
+
+        if (portrait_data) localStorage.setItem('input-portrait', portrait_data);
 
         display.style.transform = 'rotate(90deg)';
         const canvas = await html2canvas(display);
