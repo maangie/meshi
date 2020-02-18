@@ -10,6 +10,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/body-scroll-lock@2.6.4/lib/bodyScrollLock.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/1.0.0/anime.min.js"></script>
 
   <style>
     #meshi_image {
@@ -23,9 +24,15 @@
       100% { transform: rotate(0deg) translateX(0px) translateY(0px) }
     }
 
-    .container { margin-top: 1rem; }
+    .container {
+      position: absolute;
+      top: 0px;
+      margin-top: 1rem;
+    }
   </style>
 </head>
+
+<canvas id="c"></canvas>
 
 <img id='meshi_image' src='./default.png' />
 
@@ -33,6 +40,9 @@
   <button class='btn btn-lg btn-primary' id='show_button'>名刺表示</button>
   <a href='./config.html' class='btn btn-lg btn-success' id='config_button'>設定</a>
 </div>
+
+<script src="./color_changin.js"></script>
+<link href="./color_changin.css" rel="stylesheet" />
 
 <script type='module'>
   (async () => {
@@ -56,6 +66,8 @@
       meshi_image.style.top = (window.innerHeight - meshi_image.height) / 2;
       meshi_image.style.animation = 'spin 1s linear';
     }, 1);
+
+    removeClickListeners();
   }
 
   (() => {
